@@ -134,8 +134,33 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		std::string quotedPH = "#QQQQ#";
 		if(argcmd.find(quotedPH) != std::string::npos)
 		{
-			args = FindAndReplace(args,"\"", "\\\"");
-			args = FindAndReplace(args, "\\", "\\\\");
+			bool indoubles = false;
+			bool insingles = false;
+			for(size_t i = 0; i < args.length(); i++)
+			{
+				if(args[i] == '"')
+					indoubles = !indoubles;
+				if(args[i] == '\'')
+					insingles = !insingles;
+
+				if(!indoubles && !insingles && args[i] == '\\')
+				{
+					args.insert(i, "\\");
+					i++;
+					continue;
+				}
+
+				if(!indoubles && args[i] == '\'')
+				{
+					args.insert(i, "\\");
+					i++;
+					continue;
+				}
+
+			}
+			//args = FindAndReplace(args,"'", "\\'");
+
+		//	args = FindAndReplace(args, "\\", "\\\\");
 			cmd = FindAndReplace(argcmd, quotedPH, args);
 		}
 		else
@@ -143,7 +168,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			cmd = argcmd + " " + args;
 		}
 	}
-	//MessageBox(0,cmd.c_str(), 0,0);
+	/*MessageBox(0,cmd.c_str(), 0,0);
+	std::ofstream f("C:/output.txt");
+	f << cmd.c_str();
+	f.close();*/
 	// I know, I know, baaaaad win16 function, unfortunately I could not get
 	// CreateProcess working as I wanted it (actually showing me the window)
 	// and also if I used CreateProcess, I would have to parse the program name
