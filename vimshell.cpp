@@ -48,7 +48,7 @@ std::string FindAndReplace(std::string tInput, std::string tFind, std::string tR
 		return tInput;
 	}
 
-	for( ;(uPos = tInput.find( tFind, uPos )) != std::string::npos; )
+	while((uPos = tInput.find( tFind, uPos )) != std::string::npos)
 	{
 		tInput.replace( uPos, uFindLen, tReplace );
 		uPos += uReplaceLen;
