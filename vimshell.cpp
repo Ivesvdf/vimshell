@@ -172,11 +172,19 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	std::ofstream f("C:/output.txt");
 	f << cmd.c_str();
 	f.close();*/
-	// I know, I know, baaaaad win16 function, unfortunately I could not get
-	// CreateProcess working as I wanted it (actually showing me the window)
-	// and also if I used CreateProcess, I would have to parse the program name
-	// out of the shell.txt file to know where the parameters begint etc, 
-	// which is kinda difficult and not pleasant at all.
-	WinExec(cmd.c_str(), SW_SHOW);
-	return 0;
+
+
+
+	STARTUPINFO si = { sizeof(STARTUPINFO) };
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_SHOW;
+	PROCESS_INFORMATION pi;
+	char arr[1024];
+	strcpy_s(arr, 1024, cmd.c_str());
+	CreateProcess(NULL, arr, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	WaitForSingleObject(pi.hProcess, INFINITE);
+	DWORD exit_code;
+	GetExitCodeProcess(pi.hProcess, &exit_code);
+	
+	return exit_code;
 }
