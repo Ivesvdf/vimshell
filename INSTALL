@@ -1,0 +1,28 @@
+# Compilation #
+Be sure to compile with multi byte strings instead of unicode strings. Good
+luck...
+
+# Installation #
+== Installation ==
+  * Navigate to your vim installation (default: C:\program files\vim\vim72) 
+  * Find the file named "vimrun.exe" in your vim folder. 
+  * Rename this file to "vimrun.exe.bak"
+  * Download the VimShell vimrun.exe and place it where the old vimrun.exe used to be
+  * In that same folder, create a file called "shell.txt" and fill it as detailed in the next section.
+
+== shell.txt == This file should consist of 2 lines, the first line containing
+the command that will be executed when parameters are given (i.e. when you
+type `:!echo bla` in Vim. The second line will contain the command that is
+executed when you wish to silently execute a command. The third line will
+contain the command that will be executed when no parameters are given (i.e.
+when you type `:!` in Vim). 
+
+An example shell.txt file (the one I use)
+{{{
+"C:\Program files\PuttyCyg\putty.exe" -cygterm "bash -i -c '#QQQQ#;read;'"
+"C:\Program files\PuttyCyg\putty.exe" -cygterm "bash -c '#QQQQ#'"
+"C:\Program files\PuttyCyg\putty.exe" -cygterm -
+}}}
+The #QQQQ# part will be replaced by the (one double quote escaped) arguments.
+The "read" part is necessary because otherwise bash will exit right after
+executing the command leaving you no time to read it.
