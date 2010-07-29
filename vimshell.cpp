@@ -177,7 +177,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	STARTUPINFO si = { sizeof(STARTUPINFO) };
 	si.dwFlags = STARTF_USESHOWWINDOW;
-	si.wShowWindow = SW_SHOW;
+	if(execSilently)
+		si.wShowWindow = SW_HIDE;
+	else
+		si.wShowWindow = SW_SHOW;
 	PROCESS_INFORMATION pi;
 	char arr[1024];
 	strcpy_s(arr, 1024, cmd.c_str());
