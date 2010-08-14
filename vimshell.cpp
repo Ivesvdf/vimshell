@@ -131,47 +131,27 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	}
 	else
 	{
-		std::string quotedPH = "#QQQQ#";
-		if(argcmd.find(quotedPH) != std::string::npos)
-		{
-			bool indoubles = false;
-			bool insingles = false;
-			for(size_t i = 0; i < args.length(); i++)
-			{
-				if(args[i] == '"')
-					indoubles = !indoubles;
-				if(args[i] == '\'')
-					insingles = !insingles;
+		int start = argcmd.find('#F');
+		int end = argcmd.find('#', start+1);
 
-				if(!indoubles && !insingles && args[i] == '\\')
-				{
-					args.insert(i, "\\");
-					i++;
-					continue;
-				}
+		//MessageBox(0, argcmd.c_str(), 0,0);
+		if(start == std::string::npos || end == std::string::npos)
+			MessageBox(0, "Check your shell.txt", 0,0);
 
-				if(!indoubles && args[i] == '\'')
-				{
-					args.insert(i, "\\");
-					i++;
-					continue;
-				}
+		std::string appendage = argcmd.substr(start+1, end-start-1);
 
-			}
-			//args = FindAndReplace(args,"'", "\\'");
+		std::string filename = "C:/vimshelltmp.txt";
 
-		//	args = FindAndReplace(args, "\\", "\\\\");
-			cmd = FindAndReplace(argcmd, quotedPH, args);
-		}
-		else
-		{
-			cmd = argcmd + " " + args;
-		}
+		cmd = argcmd.replace(start-1, end-start+2, filename);
+		std::ofstream f(filename.c_str());
+		f << args.c_str() << appendage;
+		f.close();
 	}
-	/*MessageBox(0,cmd.c_str(), 0,0);
+
+	//MessageBox(0,cmd.c_str(), 0,0);
 	std::ofstream f("C:/output.txt");
 	f << cmd.c_str();
-	f.close();*/
+	f.close();
 
 
 
