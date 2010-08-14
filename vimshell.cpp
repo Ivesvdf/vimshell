@@ -66,6 +66,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	//MessageBox(0, lpCmdLine, 0, 0);
 	LPWSTR* strings = CommandLineToArgvW(GetCommandLineW(), &count);
 	std::string currentDir;
+	std::string tmpFile;
 
 	cvtLPW2stdstring(currentDir, strings[0]);
 
@@ -125,6 +126,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 
 	std::string argcmd = execSilently ? silentshellcommand : argumentshellcommand;
 
+
 	if(args.length() == 0)
 	{
 		cmd = interactiveshellcommand;
@@ -139,21 +141,23 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			MessageBox(0, "Check your shell.txt", 0,0);
 
 		std::string appendage = argcmd.substr(start+1, end-start-1);
+		// Get a path to a temporary file
+		char pathBuf[MAX_PATH];
+		char fileBuf[MAX_PATH];
+		GetTempPath(128, pathBuf);
+		GetTempFileName(pathBuf, "vsh", 0, fileBuf);
 
-		std::string filename = "C:/vimshelltmp.txt";
-
-		cmd = argcmd.replace(start-1, end-start+2, filename);
-		std::ofstream f(filename.c_str());
+		tmpFile = fileBuf;
+		cmd = argcmd.replace(start-1, end-start+2, fileBuf);
+		std::ofstream f(fileBuf);
 		f << args.c_str() << appendage;
 		f.close();
 	}
 
 	//MessageBox(0,cmd.c_str(), 0,0);
-	std::ofstream f("C:/output.txt");
-	f << cmd.c_str();
-	f.close();
-
-
+	//std::ofstream f("C:/output.txt");
+	//f << cmd.c_str();
+	//f.close();
 
 	STARTUPINFO si = { sizeof(STARTUPINFO) };
 	si.dwFlags = STARTF_USESHOWWINDOW;
@@ -169,5 +173,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	DWORD exit_code;
 	GetExitCodeProcess(pi.hProcess, &exit_code);
 	
+	// If we created a temporary file, we need to delete it.
+	if(tmpFile.length() > 0)
+		DeleteFile(tmpFile.c_str());
+
 	return exit_code;
 }
