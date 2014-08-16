@@ -133,7 +133,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	}
 	else
 	{
-		int start = argcmd.find('#F');
+		int start = argcmd.find("#F");
 		int end = argcmd.find('#', start+1);
 
 		//MessageBox(0, argcmd.c_str(), 0,0);
